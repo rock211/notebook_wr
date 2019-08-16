@@ -108,16 +108,21 @@ def cleanup_directory(base,problem_id,problem_dir=None,newbase=None):
 
     return success
 
-def zprof_to_xarray(base,problem_dir,problem_id,concatenated=True):
+def zprof_to_xarray(base,problem_dir,problem_id,concatenated=True,icm=False):
     """
         merge zprof dumps along t-axis and create netCDF files 
         files should have moved to zprof/
     """    
     zpmerge_dir='{}{}/zprof_merged/'.format(base,problem_dir)
     if not os.path.isdir(zpmerge_dir): os.mkdir(zpmerge_dir)
-    plist=['phase1','phase2','phase3','phase4','phase5']
+
+    if icm == True:
+        plist = ['phase1-icm', 'phase2-icm', 'phase3-icm', 'phase4-icm', 'phase5-icm']
+    else:
+        plist = ['phase1', 'phase2', 'phase3', 'phase4', 'phase5']
+
     for phase in plist:
-        zprof_fnames=glob.glob('{}{}/zprof/{}.*.{}.zprof'.format(base,problem_dir,problem_id,phase))
+        zprof_fnames=glob.glob('{}{}/zprof_icm/{}.*.{}.zprof'.format(base,problem_dir,problem_id,phase))
         zprof_fnames.sort()
         zpfile='{}{}/zprof_merged/{}.{}.zprof.nc'.format(base,problem_dir,problem_id,phase)
         if os.path.isfile(zpfile) and concatenated: 
@@ -157,11 +162,14 @@ def read_zprof(zprof_fnames):
                         dims=('fields','zaxis','taxis'))
     return da
 
-def merge_xarray(base,problem_dir,problem_id):
+def merge_xarray(base,problem_dir,problem_id,icm=False):
     """
         merge all phases into a single file
-    """    
-    plist=['phase1','phase2','phase3','phase4','phase5']
+    """
+    if icm==True:
+        plist = ['phase1-icm', 'phase2-icm', 'phase3-icm', 'phase4-icm', 'phase5-icm']
+    else:
+        plist=['phase1','phase2','phase3','phase4','phase5']
     datasets = xr.Dataset()
     for phase in plist:
         path='{}{}/zprof_merged/{}.{}.zprof.nc'.format(base,problem_dir,problem_id,phase)

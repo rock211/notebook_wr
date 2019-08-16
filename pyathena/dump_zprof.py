@@ -303,7 +303,7 @@ def dump_zprof_one(f,dc,icm_field=None,outdir='zprof_icm',
     if icm: zp_slab_icm=[]
     print('Calculating zprof...') 
     for islab in range(ds.NGrids[2]):
-        print('{}/{}'.format(islab,ds.NGrids[2]),end=' ')
+        print('{}/{}'.format(islab,ds.NGrids[2]),)
         grids=ds._get_slab_grid(islab+1,verbose=False)
         slab_domain=ds._setup_domain(grids)
         xs,ys,zs,=pa.cc_arr(slab_domain)
@@ -352,7 +352,7 @@ def dump_zprof_one(f,dc,icm_field=None,outdir='zprof_icm',
 
     print('\nWriting at {}: '.format(os.path.dirname(f).replace('id0',outdir)))
     for phase in plist:
-        print(phase,end=' ')
+        print(phase,)
         zprof_fname=f.replace('vtk','%s.zprof' % phase).replace('id0',outdir)
         with open(zprof_fname,'w') as fp:
             fp.write('# Athena vertical profile at t={}\n'.format(time))
